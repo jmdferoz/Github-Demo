@@ -1,13 +1,10 @@
-name: 'Terraform Azure RG Deployment'
+name: 'Terraform Destroy Azure RG'
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_dispatch:  # Manual trigger from GitHub UI
 
 jobs:
-  terraform:
+  terraform-destroy:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,34 +15,17 @@ jobs:
       uses: hashicorp/setup-terraform@v2
 
     - name: 'Terraform Init'
-      run: terraform init -input=false
+      run: terraform init
       env:
-        TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        TF_VAR_tenant_id:       ${{ secrets.ARM_TENANT_ID }}
-        TF_VAR_client_id:       ${{ secrets.ARM_CLIENT_ID }}
-        TF_VAR_client_secret:   ${{ secrets.ARM_CLIENT_SECRET }}
-
-    - name: 'Terraform Plan'
-      run: terraform plan -input=false
-      env:
-        TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        TF_VAR_tenant_id:       ${{ secrets.ARM_TENANT_ID }}
-        TF_VAR_client_id:       ${{ secrets.ARM_CLIENT_ID }}
-        TF_VAR_client_secret:   ${{ secrets.ARM_CLIENT_SECRET }}
-  
-    - name: 'Terraform Apply'
-      if: github.ref == 'refs/heads/main'
-      run: terraform apply -auto-approve
-      env:
-        TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        TF_VAR_tenant_id:       ${{ secrets.ARM_TENANT_ID }}
-        TF_VAR_client_id:       ${{ secrets.ARM_CLIENT_ID }}
-        TF_VAR_client_secret:   ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
+        ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
 
     - name: 'Terraform Destroy'
-      run: terraform destroy 
+      run: terraform destroy -auto-approve
       env:
-        TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-        TF_VAR_tenant_id:       ${{ secrets.ARM_TENANT_ID }}
-        TF_VAR_client_id:       ${{ secrets.ARM_CLIENT_ID }}
-        TF_VAR_client_secret:   ${{ secrets.ARM_CLIENT_SECRET }}
+        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        ARM_CLIENT_ID:       ${{ secrets.AZURE_CLIENT_ID }}
+        ARM_CLIENT_SECRET:   ${{ secrets.AZURE_CLIENT_SECRET }}
+        ARM_TENANT_ID:       ${{ secrets.AZURE_TENANT_ID }}
