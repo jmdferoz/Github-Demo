@@ -1,9 +1,6 @@
 name: 'Terraform Azure RG Deployment'
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
